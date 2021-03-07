@@ -1,28 +1,35 @@
 import geopandas
-import pandas as pd
-import matplotlib.pyplot as plt
 
-from EixampleEnergy.draw_chart import draw_chart
-from EixampleEnergy.draw_map import draw_map
+import matplotlib;
+
+from EixampleEnergy.drawer import Drawer
+
+matplotlib.use("TkAgg")
 
 
 def load():
-    return geopandas.read_file('../data/EIX_Buildings_energy_consumption.shp')
+    return geopandas.read_file('../data/EIX_superblock_buildings_energy_consumption_4326.shp')
 
 
-def draw(df):
-    fig, axs = plt.subplots(2)
-    fig.suptitle(str("Hey"))
-
-    draw_map(axs[0], df)
-    draw_chart(axs[1], df)
-    plt.show()
+def clean_data(df):
+    df = df[df['build_date'] > 1900]
+    df = df[df['E_final'] < 250]
+    df = df[df.superblock.notna()]
+    return df
 
 
 def main():
-    df = load()
-    # df = df.head(100)
-    draw(df)
+    df = clean_data(load())
+
+    drawer = Drawer(df, chartx="build_date", charty="E_final",
+                    x_label="Build year", y_label="Energy (kWh/m2/year)",
+                    map_xlim=(2.13, 2.20), map_ylim=(41.373, 41.413),
+                    update_background=True,
+                    dpi=300
+                    )
+
+    #drawer.draw_anime('../out/animation.gif')
+    drawer.draw_static('../out/static.png')
 
 
 if __name__ == '__main__':
