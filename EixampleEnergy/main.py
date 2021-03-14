@@ -21,7 +21,7 @@ def clean_data(df):
 def main():
     df = clean_data(load())
 
-    drawer = Drawer(df, chartx="build_date", charty="E_final",
+    drawer = Drawer(df, data_x="build_date", data_y="E_final", data_time='superblock',
                     x_label="Build year", y_label="Energy (kWh/m2/year)",
                     map_xlim=(2.13, 2.20), map_ylim=(41.373, 41.413),
                     update_background=True,
