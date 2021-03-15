@@ -76,7 +76,7 @@ class Drawer:
         self.ax_chart.set_xlim(self.chart_xlim)
         self.ax_chart.set_ylim(self.chart_ylim)
         sc = self.ax_chart.scatter(x=self.data_x, y=self.data_y, data=df, color='c', s=self.chart_dot_size)
-        line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_size)
+        line = self.ax_chart.plot(self.meany, color='white', linewidth=self.chart_line_size)
         #self.ax_chart.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         #self.ax_chart.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
 
@@ -119,7 +119,8 @@ class Drawer:
         self.ax_map.patch.set_alpha(1)
         self.ax_map.set_xlim(self.map_xlim)
         self.ax_map.set_ylim(self.map_ylim)
-        df.plot(ax=self.ax_map, column=self.data_x, cmap=self.map_cmap, vmin=self.data_minx, vmax=self.data_maxx)
+        df.plot(ax=self.ax_map, column=self.data_y, cmap=self.map_cmap, legend=True)
+        # df.plot(ax=self.ax_map, column=self.data_x, cmap=self.map_cmap, vmin=self.data_minx, vmax=self.data_maxx, legend=True)
         if self.background_img_path:
             cx.add_basemap(self.ax_map, crs=self.df.crs.to_string(), source=self.background_img_path, cmap=plt.get_cmap('gray'), vmin=0, vmax=255)
         self.ax_map.set_axis_off()

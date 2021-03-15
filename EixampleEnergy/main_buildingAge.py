@@ -40,15 +40,15 @@ def main():
                     x_label="Build year", y_label="Energy (kWh/year)",
                     map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
                     #background_img_path='../out/background_greyscale.tif',
-                    has_map=True, has_chart=True,
-                    chart_dot_size=1, chart_line_size=0,
+                    has_map=True, has_chart=False,
+                    chart_dot_size=0.5, chart_line_size=1,
                     is_save_anim_png=True,
                     dpi=600)
 
     # drawer.download_map_bg()
 
-    #drawer.draw_anime('../out/animation_inigo.gif')
-    drawer.draw_static('../out/static_inigo.png')
+    drawer.draw_anime('../out/chart_animation_inigo')
+    # drawer.draw_static('../out/static_inigo.png')
 
 
 if __name__ == '__main__':
