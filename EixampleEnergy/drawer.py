@@ -11,8 +11,6 @@ from rasterio.transform import from_origin
 
 class Drawer:
     #background_img = "../out/background_leyla.tif"
-    # chart_dot_size = 3
-    chart_line_width = 1
 
     def __init__(self, df,
                  data_x, data_y, data_time,
@@ -42,6 +40,7 @@ class Drawer:
 
         # Config chart
         self.chart_dot_size = chart_dot_size
+        self.chart_line_size = chart_line_size
         self.has_chart = has_chart
         if self.has_chart:
             self.chart_xlim = (self.data_minx, self.data_maxx)
@@ -77,7 +76,7 @@ class Drawer:
         self.ax_chart.set_xlim(self.chart_xlim)
         self.ax_chart.set_ylim(self.chart_ylim)
         sc = self.ax_chart.scatter(x=self.data_x, y=self.data_y, data=df, color='c', s=self.chart_dot_size)
-        #line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_width)
+        line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_size)
         #self.ax_chart.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         #self.ax_chart.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
 
@@ -89,7 +88,7 @@ class Drawer:
         if self.y_label:
             plt.ylabel(self.y_label, color='white')
 
-        self.ax_chart.set_position([0.75, 0.12, 0.20, 0.15])
+        #self.ax_chart.set_position([0.75, 0.12, 0.20, 0.15])
 
     def download_map_bg(self):
         if self.background_img_path is None:
@@ -136,7 +135,7 @@ class Drawer:
             self.draw_chart(sb_df)
 
         if self.is_save_anim_png:
-            plt.savefig(f'{save_file}-{num}.png')
+            plt.savefig(f'{save_file}-{num}.png', transparent=True)
 
     def draw_anime(self, save_file=None):
         sb_ids = self.df[[self.data_time]].squeeze().unique()
@@ -155,6 +154,6 @@ class Drawer:
             self.draw_chart(self.df)
 
         if save_file:
-            plt.savefig(save_file)
+            plt.savefig(save_file, transparent=True)
 
         plt.show()

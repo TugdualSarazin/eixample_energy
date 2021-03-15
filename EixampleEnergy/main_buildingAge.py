@@ -43,7 +43,7 @@ def main():
                     has_map=True, has_chart=True,
                     chart_dot_size=1, chart_line_size=0,
                     is_save_anim_png=True,
-                    dpi=300)
+                    dpi=600)
 
     # drawer.download_map_bg()
 
