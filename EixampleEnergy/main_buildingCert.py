@@ -2,6 +2,7 @@ import geopandas
 
 import matplotlib;
 import pandas as pd
+from matplotlib import cm
 
 from EixampleEnergy.drawer import Drawer
 
@@ -66,7 +67,8 @@ def main():
                     x_label="Build year", y_label="Energy Certificate",
                     map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
                     #background_img_path='../out/background_greyscale.tif',
-                    has_map=True, has_chart=False, map_cmap='prism',
+                    has_map=True, has_chart=False,
+                    map_cmap=cm.get_cmap('PiYG', 7),
                     chart_dot_size=0.5, chart_line_size=1,
                     is_save_anim_png=True,
                     dpi=600)
