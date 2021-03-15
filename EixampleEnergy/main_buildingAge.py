@@ -12,8 +12,6 @@ def load():
     return geopandas.read_file('../data/Buildings_SJ/BCN_Avg_Energy_4326.shp')
 
 
-
-
 def build_date_group(build_date):
     if build_date < 1979:
         return "group_01"
@@ -24,10 +22,12 @@ def build_date_group(build_date):
     else:
         return "group_04"
 
+
 def clean_data(df):
     # df = df[["build_date","RES_energy","geometry"]]
     df = df[df['build_date'] > 1900]
-    df["gr_by_age"]= df['build_date'].apply(build_date_group)
+    df["gr_by_age"] = df['build_date'].apply(build_date_group)
+    df = df.sort_values(by=["gr_by_age"])
     return df
 
 
@@ -36,15 +36,18 @@ def main():
 
     # exit()
 
-    drawer = Drawer(df, chartx="build_date", charty="RES_energy",
-                    x_label="Build year", y_label="Energy (kWh/m2/year)",
-                    map_xlim=(2.13, 2.20), map_ylim=(41.373, 41.413),
-                    update_background=False,
+    drawer = Drawer(df, data_x="build_date", data_y="RES_energy", data_time='gr_by_age',
+                    x_label="Build year", y_label="Energy (kWh/year)",
+                    map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
+                    has_chart=True,
+                    chart_dot_size=1,
                     dpi=300
                     )
 
-    #drawer.draw_anime('../out/animation.gif')
-    drawer.draw_static('../out/static.png')
+    # drawer.download_map_bg()
+
+    drawer.draw_anime('../out/animation.gif')
+    # drawer.draw_static('../out/static.png')
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ from matplotlib.animation import FuncAnimation
 
 class Drawer:
     #background_img = "../out/background_leyla.tif"
-    chart_dot_size = 3
+    # chart_dot_size = 3
     chart_line_width = 1
 
     def __init__(self, df,
@@ -16,7 +16,9 @@ class Drawer:
                  map_xlim=None, map_ylim=None,
                  background_img_path=None,
                  has_chart=True,
+                 map_cmap='YlGnBu', chart_dot_size=1,
                  dpi=72):
+        self.map_cmap = map_cmap
         self.df = df
 
         self.x_label = x_label
@@ -27,6 +29,7 @@ class Drawer:
         self.data_time = data_time
 
         # Config chart
+        self.chart_dot_size = chart_dot_size
         self.has_chart = has_chart
         if self.has_chart:
             self.chart_xlim = (df[self.data_x].min(), df[self.data_x].max())
@@ -48,7 +51,7 @@ class Drawer:
 
         # Config fig
         if self.has_chart:
-            self.fig, (self.ax_map, self.ax_chart) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]}, dpi=dpi)
+            self.fig, (self.ax_map, self.ax_chart) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [4, 1]}, dpi=dpi)
         else:
             self.fig, (self.ax_map) = plt.subplots(1, 1, dpi=dpi)
         plt.subplots_adjust(right=0.80)
@@ -57,7 +60,7 @@ class Drawer:
         self.ax_chart.clear()
         self.ax_chart.set_xlim(self.chart_xlim)
         self.ax_chart.set_ylim(self.chart_ylim)
-        sc = self.ax_chart.scatter(x=self.data_x, y=self.data_y, data=df, s=self.chart_dot_size)
+        sc = self.ax_chart.scatter(x=self.data_x, y=self.data_y, data=df, color='c', s=self.chart_dot_size)
         line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_width)
         #self.ax_chart.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         self.ax_chart.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
@@ -88,7 +91,8 @@ class Drawer:
         self.ax_map.set_xlim(self.map_xlim)
         self.ax_map.set_ylim(self.map_ylim)
         #df.plot(ax=self.ax_map, column=self.data_x, legend=True, cmap='YlGnBu')
-        df.plot(ax=self.ax_map, column=self.data_x, cmap='YlGnBu')
+        # df.plot(ax=self.ax_map, column=self.data_x, cmap='YlGnBu')
+        df.plot(ax=self.ax_map, column=self.data_x, cmap=self.map_cmap)
         # TODO
         #cx.add_basemap(self.ax_map, crs=self.df.crs.to_string(), source=self.background_img)
         self.ax_map.set_axis_off()
