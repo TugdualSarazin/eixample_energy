@@ -30,6 +30,7 @@ def main():
                     #background_img_path='../out/background_greyscale.tif',
                     has_map=True, has_chart=True,
                     chart_dot_size=1, chart_line_size=0,
+                    is_save_anim_png=True,
                     dpi=300)
 
     #drawer.download_map_bg()

@@ -20,6 +20,7 @@ class Drawer:
                  map_xlim=None, map_ylim=None,
                  background_img_path=None,
                  has_map=True, has_chart=True,
+                 is_save_anim_png=False,
                  map_cmap='YlGnBu', chart_dot_size=1, chart_line_size=1,
                  dpi=72):
         self.map_cmap = map_cmap
@@ -61,6 +62,7 @@ class Drawer:
             self.map_ylim = ([df.total_bounds[1], df.total_bounds[3]])
 
         # Config fig
+        self.is_save_anim_png = is_save_anim_png
         if self.has_chart and self.has_map:
             self.fig, (self.ax_map, self.ax_chart) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [4, 1]}, dpi=dpi)
         elif self.has_map:
@@ -124,7 +126,7 @@ class Drawer:
         self.ax_map.set_axis_off()
         self.ax_map.set_position([0., 0., 1., 1.])
 
-    def animate(self, num, sb_ids):
+    def animate(self, num, sb_ids, save_file):
         sb_df = self.df[self.df[self.data_time].isin(sb_ids[:num])]
         print(f"{num}/{len(sb_ids)}")
 
@@ -133,11 +135,14 @@ class Drawer:
         if self.has_chart:
             self.draw_chart(sb_df)
 
+        if self.is_save_anim_png:
+            plt.savefig(f'{save_file}-{num}.png')
+
     def draw_anime(self, save_file=None):
         sb_ids = self.df[[self.data_time]].squeeze().unique()
         sb_ids.sort()
 
-        ani = FuncAnimation(self.fig, self.animate, frames=len(sb_ids)+1, interval=400, repeat=True, fargs=[sb_ids])
+        ani = FuncAnimation(self.fig, self.animate, frames=len(sb_ids)+1, interval=400, repeat=False, fargs=[sb_ids, save_file])
         if save_file:
             ani.save(save_file, writer='imagemagick')
 
