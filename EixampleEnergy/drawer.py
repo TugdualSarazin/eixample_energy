@@ -19,8 +19,8 @@ class Drawer:
                  x_label=None, y_label=None,
                  map_xlim=None, map_ylim=None,
                  background_img_path=None,
-                 has_chart=True,
-                 map_cmap='YlGnBu', chart_dot_size=1,
+                 has_map=True, has_chart=True,
+                 map_cmap='YlGnBu', chart_dot_size=1, chart_line_size=1,
                  dpi=72):
         self.map_cmap = map_cmap
         self.df = df
@@ -48,6 +48,7 @@ class Drawer:
             self.meany = self.df.groupby(self.data_x)[self.data_y].mean()
 
         # Config map
+        self.has_map = has_map
         self.background_img_path = background_img_path
         if map_xlim:
             self.map_xlim = map_xlim
@@ -60,18 +61,21 @@ class Drawer:
             self.map_ylim = ([df.total_bounds[1], df.total_bounds[3]])
 
         # Config fig
-        if self.has_chart:
+        if self.has_chart and self.has_map:
             self.fig, (self.ax_map, self.ax_chart) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [4, 1]}, dpi=dpi)
-        else:
+        elif self.has_map:
             self.fig, (self.ax_map) = plt.subplots(1, 1, dpi=dpi)
-        plt.subplots_adjust(right=0.80)
+        elif self.has_chart:
+            self.fig, (self.ax_chart) = plt.subplots(1, 1, dpi=dpi)
+        #plt.subplots_adjust(right=0.80)
 
     def draw_chart(self, df):
         self.ax_chart.clear()
+        self.ax_chart.patch.set_alpha(1)
         self.ax_chart.set_xlim(self.chart_xlim)
         self.ax_chart.set_ylim(self.chart_ylim)
         sc = self.ax_chart.scatter(x=self.data_x, y=self.data_y, data=df, color='c', s=self.chart_dot_size)
-        line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_width)
+        #line = self.ax_chart.plot(self.meany, color='r', linewidth=self.chart_line_width)
         #self.ax_chart.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         #self.ax_chart.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
 
@@ -103,36 +107,6 @@ class Drawer:
             r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
             gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
             return gray
-        #
-        # Z, ext = cx.bounds2img(self.map_xlim[0], self.map_ylim[0], self.map_xlim[1], self.map_ylim[1],
-        #                        source=cx.providers.CartoDB.Positron, ll=True)
-        # Z = rgb2gray(Z)
-        # # Write
-        # # ---
-        # h, w, b = Z.shape
-        # # --- https://mapbox.github.io/rasterio/quickstart.html#opening-a-dataset-in-writing-mode
-        # minX, maxX, minY, maxY = ext
-        # import numpy as np
-        # x = np.linspace(minX, maxX, w)
-        # y = np.linspace(minY, maxY, h)
-        # resX = (x[-1] - x[0]) / w
-        # resY = (y[-1] - y[0]) / h
-        # transform = from_origin(x[0] - resX / 2, y[-1] + resY / 2, resX, resY)
-        # # ---
-        # import rasterio as rio
-        # with rio.open(
-        #         self.background_img_path,
-        #         "w",
-        #         driver="GTiff",
-        #         height=h,
-        #         width=w,
-        #         count=b,
-        #         dtype=str(Z.dtype.name),
-        #         crs="epsg:3857",
-        #         transform=transform,
-        # ) as raster:
-        #     for band in range(b):
-        #         raster.write(Z[:, :, band], band + 1)
 
         plt.close()
         plt.imshow(rgb2gray(img), extent=ext, cmap=plt.get_cmap('gray'), vmin=0, vmax=255)
@@ -141,25 +115,21 @@ class Drawer:
 
     def draw_map(self, df):
         self.ax_map.clear()
-
+        self.ax_map.patch.set_alpha(1)
         self.ax_map.set_xlim(self.map_xlim)
         self.ax_map.set_ylim(self.map_ylim)
         df.plot(ax=self.ax_map, column=self.data_x, cmap=self.map_cmap, vmin=self.data_minx, vmax=self.data_maxx)
         if self.background_img_path:
-            #w, s, e, n = self.to_crs(epsg=3857).total_bounds
-            # img, ext = cx.bounds2raster(
-            #     self.map_xlim[0], self.map_ylim[0], self.map_xlim[1], self.map_ylim[1],
-            #     self.background_img_path, ll=True)
-            # self.ax_map.imshow(img, extent=ext)
             cx.add_basemap(self.ax_map, crs=self.df.crs.to_string(), source=self.background_img_path, cmap=plt.get_cmap('gray'), vmin=0, vmax=255)
-        #self.ax_map.set_axis_off()
+        self.ax_map.set_axis_off()
         self.ax_map.set_position([0., 0., 1., 1.])
 
     def animate(self, num, sb_ids):
         sb_df = self.df[self.df[self.data_time].isin(sb_ids[:num])]
         print(f"{num}/{len(sb_ids)}")
 
-        self.draw_map(sb_df)
+        if self.has_map:
+            self.draw_map(sb_df)
         if self.has_chart:
             self.draw_chart(sb_df)
 
@@ -174,11 +144,12 @@ class Drawer:
         plt.show()
 
     def draw_static(self, save_file=None):
-        self.draw_map(self.df)
+        if self.has_map:
+            self.draw_map(self.df)
         if self.has_chart:
             self.draw_chart(self.df)
 
         if save_file:
-            plt.savefig(save_file, transparent=True)
+            plt.savefig(save_file)
 
         plt.show()

@@ -27,14 +27,15 @@ def main():
     drawer = Drawer(df, data_x="Avg_in_hou", data_y="Avg_age", data_time='quantile_time',
                     x_label="Avg_in_hou", y_label="Avg_age",
                     map_xlim=(2.02, 2.26), map_ylim=(41.313, 41.47),
-                    has_chart=True,
-                    background_img_path='../out/background_greyscale.tif',
+                    #background_img_path='../out/background_greyscale.tif',
+                    has_map=True, has_chart=True,
+                    chart_dot_size=1, chart_line_size=0,
                     dpi=300)
 
     #drawer.download_map_bg()
 
-    #drawer.draw_anime('../out/animation.gif')
-    drawer.draw_static('../out/static.png')
+    drawer.draw_anime('../out/animation_leyla.gif')
+    #drawer.draw_static('../out/static_leyla.png')
 
 
 if __name__ == '__main__':

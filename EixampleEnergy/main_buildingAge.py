@@ -5,7 +5,7 @@ import pandas as pd
 
 from EixampleEnergy.drawer import Drawer
 
-matplotlib.use("TkAgg")
+#matplotlib.use("TkAgg")
 
 
 def load():
@@ -39,15 +39,15 @@ def main():
     drawer = Drawer(df, data_x="build_date", data_y="RES_energy", data_time='gr_by_age',
                     x_label="Build year", y_label="Energy (kWh/year)",
                     map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
-                    has_chart=True,
-                    chart_dot_size=1,
-                    dpi=300
-                    )
+                    #background_img_path='../out/background_greyscale.tif',
+                    has_map=True, has_chart=True,
+                    chart_dot_size=1, chart_line_size=0,
+                    dpi=300)
 
     # drawer.download_map_bg()
 
-    drawer.draw_anime('../out/animation.gif')
-    # drawer.draw_static('../out/static.png')
+    #drawer.draw_anime('../out/animation_inigo.gif')
+    drawer.draw_static('../out/static_inigo.png')
 
 
 if __name__ == '__main__':
