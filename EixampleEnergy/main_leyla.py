@@ -1,40 +1,39 @@
 import geopandas
+import pandas as pd
 
 import matplotlib;
 
 from EixampleEnergy.drawer import Drawer
 
-matplotlib.use("TkAgg")
+#matplotlib.use("TkAgg")
 
 
 def load():
     return geopandas.read_file('../data/Income/BCN_City_Income.shp')
 
-from sklearn.preprocessing import MinMaxScaler
 
 def clean_data(df, frames):
-    df["Avg_in_hou_num"] = df['Avg_in_hou'].apply(lambda str_avg: float(str_avg.replace(',', '.')))
-    min = df["Avg_in_hou_num"].min()
-    max = df["Avg_in_hou_num"].max()
-    MinMaxScaler().fit(df["Avg_in_hou_num"])
+    df["Avg_in_hou"] = df['Avg_in_hou'].apply(lambda str_avg: float(str_avg.replace(',', '.')))
+    df["Avg_age"] = df['Avg_age'].apply(lambda str_avg: float(str_avg.replace(',', '.')))
+    df['quantile_time'] = pd.qcut(df['Avg_in_hou'], frames, labels=False)
 
     return df
 
 
 def main():
     df = load()
-    df = clean_data(df, 100)
+    df = clean_data(df, 20)
 
-    drawer = Drawer(df, data_x="Avg_in_hou_num", data_y="Avg_in_hou", data_time='CDIS',
-                    x_label="Build year", y_label="Energy (kWh/m2/year)",
-                    map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
-                    has_chart=False,
-                    dpi=300
-                    )
+    drawer = Drawer(df, data_x="Avg_in_hou", data_y="Avg_age", data_time='quantile_time',
+                    x_label="Avg_in_hou", y_label="Avg_age",
+                    map_xlim=(2.02, 2.26), map_ylim=(41.313, 41.47),
+                    has_chart=True,
+                    background_img_path='../out/background_greyscale.tif',
+                    dpi=300)
 
     #drawer.download_map_bg()
 
-    drawer.draw_anime('../out/animation.gif')
+    #drawer.draw_anime('../out/animation.gif')
     drawer.draw_static('../out/static.png')
 
 
