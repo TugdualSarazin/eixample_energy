@@ -54,7 +54,7 @@ def clean_data(df):
     df = df[df['build_date'] > 1900]
     df["gr_by_age"] = df['build_date'].apply(build_date_group)
     df["en_cert"] = df['RES_energy'].apply(energy_certificate)
-    df = df.sort_values(by=["en_cert"], ascending=False)
+    #df = df.sort_values(by=["en_cert"], ascending=False)
     return df
 
 
@@ -63,12 +63,12 @@ def main():
 
     # exit()
 
-    drawer = Drawer(df, data_x="build_date", data_y="en_cert", data_time="build_date",
+    drawer = Drawer(df, data_x="build_date", data_y="en_cert", data_time="en_cert",
                     x_label="Build year", y_label="Energy Certificate",
                     map_xlim=(2.05, 2.23), map_ylim=(41.313, 41.47),
                     #background_img_path='../out/background_greyscale.tif',
                     has_map=True, has_chart=False,
-                    map_cmap=cm.get_cmap('PiYG', 7),
+                    map_cmap=cm.get_cmap('RdYlGn', 7).reversed(),
                     chart_dot_size=0.5, chart_line_size=1,
                     is_save_anim_png=True,
                     dpi=600)
@@ -79,7 +79,7 @@ def main():
 
 
     drawer.draw_anime('../out/animation_e-certification')
-    # drawer.draw_static('../out/static_cert.png')
+    #drawer.draw_static('../out/static_cert.png')
 
 
 if __name__ == '__main__':

@@ -119,7 +119,7 @@ class Drawer:
         self.ax_map.patch.set_alpha(1)
         self.ax_map.set_xlim(self.map_xlim)
         self.ax_map.set_ylim(self.map_ylim)
-        df.plot(ax=self.ax_map, column=self.data_y, cmap=self.map_cmap, legend=True)
+        df.plot(ax=self.ax_map, column=self.data_y, cmap=self.map_cmap)
         # df.plot(ax=self.ax_map, column=self.data_x, cmap=self.map_cmap, vmin=self.data_minx, vmax=self.data_maxx, legend=True)
         if self.background_img_path:
             cx.add_basemap(self.ax_map, crs=self.df.crs.to_string(), source=self.background_img_path, cmap=plt.get_cmap('gray'), vmin=0, vmax=255)
