@@ -32,8 +32,8 @@ class IncomeAge(Config):
 
 def main():
     drawer = Drawer(IncomeAge(), show=True, has_map=True, has_chart=True)
-    # drawer.draw_anime(save_anim_imgs=True)
-    drawer.draw_static()
+    drawer.draw_anime(save_anim_imgs=True)
+    #drawer.draw_static()
 
 
 if __name__ == '__main__':

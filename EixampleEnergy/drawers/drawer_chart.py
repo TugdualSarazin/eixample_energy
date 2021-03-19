@@ -19,7 +19,7 @@ class DrawerChart:
 
     def draw(self, df):
         self.ax.clear()
-        self.ax.patch.set_alpha(1)
+        self.ax.patch.set_alpha(0)
         self.ax.set_xlim(self.chart_xlim)
         self.ax.set_ylim(self.chart_ylim)
         sc = self.ax.scatter(x=self.map.chart_xcol, y=self.map.chart_ycol, data=df, color='c',
@@ -28,12 +28,12 @@ class DrawerChart:
         # self.ax.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         # self.ax.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
 
-        self.ax.spines["bottom"].set_color('white')
-        self.ax.spines["left"].set_color('white')
-        self.ax.tick_params(colors='white')
-        if self.map.x_label:
-            plt.xlabel(self.map.x_label, color='white')
-        if self.map.y_label:
-            plt.ylabel(self.map.y_label, color='white')
+        # self.ax.spines["bottom"].set_color('white')
+        # self.ax.spines["left"].set_color('white')
+        # self.ax.tick_params(colors='white')
+        # if self.map.x_label:
+        #     plt.xlabel(self.map.x_label, color='white')
+        # if self.map.y_label:
+        #     plt.ylabel(self.map.y_label, color='white')
 
         # self.ax_chart.set_position([0.75, 0.12, 0.20, 0.15])

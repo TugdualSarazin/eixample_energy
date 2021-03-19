@@ -63,6 +63,7 @@ class BuildingCert(Config):
     map_ylim = (41.313, 41.47)
     chart_dot_size = 0.5
     chart_line_size = 1
+    background_img_path = '../out/background_greyscale.tif'
     # dpi = 600
     dpi = 72
     save_dir_path = '../out/building_cert/'
@@ -71,7 +72,7 @@ class BuildingCert(Config):
 def main():
     drawer = Drawer(BuildingCert(), show=True, has_map=True, has_chart=True)
     drawer.draw_anime(save_anim_imgs=True)
-    # drawer.draw_static()
+    #drawer.draw_static()
 
 
 if __name__ == '__main__':
