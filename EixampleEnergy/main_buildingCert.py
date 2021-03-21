@@ -1,11 +1,9 @@
-import geopandas
-
-from matplotlib import cm
-
-from EixampleEnergy.config import Config
+from EixampleEnergy.tool import load_shapefile
 from EixampleEnergy.drawers.drawer import Drawer
 
-# calcularion of certificate ranges
+from EixampleEnergy.drawers.drawer_chart import DrawerChart
+from EixampleEnergy.drawers.drawer_map import DrawerMap
+
 x1 = 0
 x2 = 34.475
 x3 = 43.83 + (61.66 - 43.83) / 2
@@ -43,36 +41,36 @@ def energy_certificate(build_energy):
         return 7
 
 
-class BuildingCert(Config):
-    shape_file_path = '../data/Buildings_SJ/BCN_Avg_Energy_4326.shp'
-
-    # Overwrite clean_data
-    def clean_data(self):
-        self.df = self.df[self.df['build_date'] > 1900]
-        self.df["gr_by_age"] = self.df['build_date'].apply(build_date_group)
-        self.df["en_cert"] = self.df['RES_energy'].apply(energy_certificate)
-
-    # Drawer overwrite config
-    chart_xcol = "build_date"
-    chart_ycol = "en_cert"
-    map_color_col = "en_cert"
-    time_col = "en_cert"
-    x_label = "Build year"
-    y_label = "Energy Certificate"
-    map_xlim = (2.05, 2.23)
-    map_ylim = (41.313, 41.47)
-    chart_dot_size = 0.5
-    chart_line_size = 1
-    background_img_path = '../out/background_greyscale.tif'
-    # dpi = 600
-    dpi = 72
-    save_dir_path = '../out/building_cert/'
+def clean_data(df):
+    df = df[df['build_date'] > 1900]
+    df["gr_by_age"] = df['build_date'].apply(build_date_group)
+    df["en_cert"] = df['RES_energy'].apply(energy_certificate)
+    return df
 
 
 def main():
-    drawer = Drawer(BuildingCert(), show=True, has_map=True, has_chart=True)
-    drawer.draw_anime(save_anim_imgs=True)
-    #drawer.draw_static()
+    df = clean_data(load_shapefile('../data/Buildings_SJ/BCN_Avg_Energy_4326.shp'))
+    drawer_map = DrawerMap(full_df=df,
+                           color_col="en_cert",
+                           xlim=(2.05, 2.23),
+                           ylim=(41.313, 41.47),
+                           bg_img='../out/background_greyscale.tif')
+    drawer_chart = DrawerChart(full_df=df,
+                               xcol="build_date",
+                               ycol="en_cert",
+                               xlabel="Build year",
+                               ylabel="Energy Certificate",
+                               dot_size=0.5, line_size=1)
+
+    drawer = Drawer(full_df=df,
+                    drawers=[drawer_map, drawer_chart],
+                    time_col='en_cert',
+                    # dpi = 600,
+                    dpi=72,
+                    save_dir_path='../out/building_age/')
+
+    drawer.draw_anime(save_anim_imgs=True, show=False)
+    # drawer.draw_static()
 
 
 if __name__ == '__main__':

@@ -1,17 +1,26 @@
-import matplotlib.pyplot as plt
+from EixampleEnergy.drawers.drawer_elem import DrawerElem
 
 
-class DrawerChart:
-    def __init__(self, map, ax):
-        self.map = map
-        self.ax = ax
+class DrawerChart(DrawerElem):
+    def __init__(self, full_df,
+                 xcol, ycol,
+                 xlabel=None, ylabel=None,
+                 dot_size=1, line_size=1):
+        # Init attributes
+        self.full_df = full_df
+        self.xcol = xcol
+        self.ycol = ycol
+        self.xlabel = xlabel
+        self.ylabel = ylabel
+        self.dot_size = dot_size
+        self.line_size = line_size
 
         # Min/max mean
-        self.chart_minx = self.map.df[self.map.chart_xcol].min()
-        self.chart_maxx = self.map.df[self.map.chart_xcol].max()
-        self.chart_miny = self.map.df[self.map.chart_ycol].min()
-        self.chart_maxy = self.map.df[self.map.chart_ycol].max()
-        self.meany = self.map.df.groupby(self.map.chart_xcol)[self.map.chart_ycol].mean()
+        self.chart_minx = self.full_df[self.xcol].min()
+        self.chart_maxx = self.full_df[self.xcol].max()
+        self.chart_miny = self.full_df[self.ycol].min()
+        self.chart_maxy = self.full_df[self.ycol].max()
+        self.meany = self.full_df.groupby(self.xcol)[self.ycol].mean()
 
         # Chart lim
         self.chart_xlim = (self.chart_minx, self.chart_maxx)
@@ -22,9 +31,9 @@ class DrawerChart:
         self.ax.patch.set_alpha(0)
         self.ax.set_xlim(self.chart_xlim)
         self.ax.set_ylim(self.chart_ylim)
-        sc = self.ax.scatter(x=self.map.chart_xcol, y=self.map.chart_ycol, data=df, color='c',
-                             s=self.map.chart_dot_size)
-        line = self.ax.plot(self.meany, color='white', linewidth=self.map.chart_line_size)
+        sc = self.ax.scatter(x=self.xcol, y=self.ycol, data=df, color='c',
+                             s=self.dot_size)
+        line = self.ax.plot(self.meany, color='white', linewidth=self.line_size)
         # self.ax.legend((sc, line), ('Mean', 'Building'), bbox_to_anchor=(1, 1), borderaxespad=0, frameon=False)
         # self.ax.legend([sc, line[0]], ['Buildings', 'Eixample\nmean'], bbox_to_anchor=(1, 1))
 

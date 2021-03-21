@@ -4,17 +4,15 @@ import matplotlib.pyplot as plt
 import rasterio
 from rasterio import rio
 
-from EixampleEnergy.main_buildingAge import BuildingAge
-
 
 def download_map_bg(self):
-    if self.config.background_img_path is None:
+    if self.config.bg_img is None:
         raise Exception("Variable Drawer.background_img_path is not defined")
 
-    print(f"Downloading map's background image to {self.config.background_img_path}")
+    print(f"Downloading map's background image to {self.config.bg_img}")
     img, ext = cx.bounds2raster(
         self.config.map_xlim[0], self.config.map_ylim[0], self.config.map_xlim[1], self.config.map_ylim[1],
-        self.config.background_img_path,
+        self.config.bg_img,
         ll=True,
         # source=cx.providers.CartoDB.Positron,
         # source='https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'

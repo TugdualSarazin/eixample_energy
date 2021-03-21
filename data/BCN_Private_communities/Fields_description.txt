@@ -1,0 +1,50 @@
+gml_id: Bcn building code
+beginning: date of first integration in cadastre
+end: date of last integration in cadastre
+Cad_ref: Sapnish Cadastre reference code
+currentUse: Building use based on cadastre
+num_locals: number of total cadastral units per building
+num_houses: number of households per building (within cadastral units)
+num_floors: number of floors per building
+build_surf: total built surface per building
+build_date: age of building construction
+Resid_E: average residential unit energy consumption per sqm (kwh/sqm * year)
+Resid_CO2: average residential unit CO2 emissions per sqm (kg CO2/sqm * year)
+Serv_E: average commercial or office unit energy consumption per sqm (kwh/sqm * year)
+Serv_CO2: average commercial or office unit CO2 emissions per sqm (kg CO2/sqm * year)
+Net_income: average net income per household (by Censal Section)
+Gross_inc: average gross income per household (by Censal Section)
+Avg_house_S: average household surface in sqm (by Censal Section)
+Shape_Area: building footprint in sqm
+House_cons: average yearly energy consumption per household (kwh * year)
+	"House_cons" = "Resid_E" * "Avg_house_S" * 0.675 #(primary to final E ratio conversion)  
+
+H_E_bill: average yearly energy bill per household (€* year)
+	if Resid_E <= 35: "H_E_bill" = 5 * "House_cons"
+	if Resid_E > 35 AND Resid_E <= 60: "H_E_bill" = 6.25 * "House_cons"
+	if Resid_E > 60 AND Resid_E <= 85: "H_E_bill" = 7.5 * "House_cons"
+	if Resid_E > 85 AND Resid_E <= 120: "H_E_bill" = 9 * "House_cons"
+	if Resid_E > 120 AND Resid_E <= 180: "H_E_bill" = 11 * "House_cons"
+	if Resid_E > 180 AND Resid_E <= 280: "H_E_bill" = 14 * "House_cons"
+	if Resid_E > 280 AND Resid_E <= 500: "H_E_bill" = 18.75 * "House_cons"
+	if Resid_E > 500: "H_E_bill" = 22.5 * "House_cons"
+
+Bill_income: percentage of energy bill in relation to total household income (%)
+	"Bill_income" = "H_E_bill" / "Net_income"
+	
+E_certification: average certification letter per building based on residential energy consumption
+	if Resid_E <= 35: "E_certification" = 'A'
+	if Resid_E > 35 AND Resid_E <= 60: "E_certification" = 'B'
+	if Resid_E > 60 AND Resid_E <= 85: "E_certification" = 'C'
+	if Resid_E > 85 AND Resid_E <= 120: "E_certification" = 'D'
+	if Resid_E > 120 AND Resid_E <= 180: "E_certification" = 'E'
+	if Resid_E > 180 AND Resid_E <= 280: "E_certification" = 'F'
+	if Resid_E > 280: "E_certification" = 'G'
+Build_cons: average yearly energy consumption per building (kwh * year)
+	"Build_cons" = "House_cons" * "num_houses" * 0.75 #(ratio conversion)
+
+House_CO2: average CO2 emissions per household (kg CO2 * year)
+	"House_CO2" = "House_cons"*0.275 #(avg ratio of CO2 emissions per kwh by spanish government)
+
+Build_CO2: average CO2 emissions per building (kg CO2* year)  
+  	"Build_CO2" = "Build_cons"*0.275 #(avg ratio of CO2 emissions per kwh by spanish government)
