@@ -67,7 +67,7 @@ def main():
                     time_col='en_cert',
                     # dpi = 600,
                     dpi=72,
-                    save_dir_path='../out/building_age/')
+                    save_dir_path='../out/building_cert/')
 
     drawer.draw_anime(save_anim_imgs=True, show=False)
     # drawer.draw_static()

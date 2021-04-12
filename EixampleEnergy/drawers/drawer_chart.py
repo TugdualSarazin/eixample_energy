@@ -16,21 +16,21 @@ class DrawerChart(DrawerElem):
         self.line_size = line_size
 
         # Min/max mean
-        self.chart_minx = self.full_df[self.xcol].min()
-        self.chart_maxx = self.full_df[self.xcol].max()
-        self.chart_miny = self.full_df[self.ycol].min()
-        self.chart_maxy = self.full_df[self.ycol].max()
+        self.minx = self.full_df[self.xcol].min()
+        self.maxx = self.full_df[self.xcol].max()
+        self.miny = self.full_df[self.ycol].min()
+        self.maxy = self.full_df[self.ycol].max()
         self.meany = self.full_df.groupby(self.xcol)[self.ycol].mean()
 
         # Chart lim
-        self.chart_xlim = (self.chart_minx, self.chart_maxx)
-        self.chart_ylim = (self.chart_miny, self.chart_maxy)
+        self.xlim = (self.minx, self.maxx)
+        self.ylim = (self.miny, self.maxy)
 
     def draw(self, df):
         self.ax.clear()
         self.ax.patch.set_alpha(0)
-        self.ax.set_xlim(self.chart_xlim)
-        self.ax.set_ylim(self.chart_ylim)
+        self.ax.set_xlim(self.xlim)
+        self.ax.set_ylim(self.ylim)
         sc = self.ax.scatter(x=self.xcol, y=self.ycol, data=df, color='c',
                              s=self.dot_size)
         line = self.ax.plot(self.meany, color='white', linewidth=self.line_size)

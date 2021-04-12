@@ -8,12 +8,14 @@ class Drawer:
                  full_df,
                  drawers,
                  time_col,
+                 is_time_cumulative=True,
                  dpi=72,
                  save_dir_path=None):
         # Init attributes
         self.full_df = full_df
         self.drawers = drawers
         self.time_col = time_col
+        self.is_time_cumulative = is_time_cumulative
         self.dpi = dpi
         self.save_dir_path = save_dir_path
 
@@ -21,9 +23,9 @@ class Drawer:
         self.time_ids.sort()
 
         # Init fig and drawers' ax
-        self.fig, axs = plt.subplots(len(self.drawers), 1, gridspec_kw={'height_ratios': [4, 1]}, dpi=self.dpi)
+        self.fig, axs = plt.subplots(len(self.drawers), 1, dpi=self.dpi, squeeze=False)
         for drw, ax in zip(self.drawers, axs):
-            drw.init_ax(ax)
+            drw.init_ax(ax[0])
 
         # Create output folder
         if self.save_dir_path:
@@ -35,10 +37,16 @@ class Drawer:
 
     # TODO: unit test
     def filter_df(self, num=None):
+        # Static mode (num=None)
         if num is None:
             df = self.full_df
+        # Anime mode (num>=0)
         else:
-            df = self.full_df[self.full_df[self.time_col].isin(self.time_ids[:num])]
+            if self.is_time_cumulative:
+                time_values = self.time_ids[:num]
+            else:
+                time_values = [self.time_ids[num]]
+            df = self.full_df[self.full_df[self.time_col].isin(time_values)]
             print(f"{num}/{len(self.time_ids)}")
         return df
 
@@ -54,7 +62,10 @@ class Drawer:
             if num is None:
                 path = f'{save_base_path}.png'
             else:
-                path = f'{save_base_path}-{num}.png'
+                # TODO: update this to param
+                id = self.time_ids[num]
+                path = f'{save_base_path}-{id}.png'
+                #path = f'{save_base_path}-{num}.png'
             plt.savefig(path, transparent=True)
 
     def draw_anime(self, save_anim_imgs=False, show=True):
@@ -67,7 +78,10 @@ class Drawer:
                 save_anim_imgs_base_path = self.save_dir_path + '/anim'
 
         # Do animation / draw
-        ani = FuncAnimation(self.fig, self.draw, frames=len(self.time_ids) + 1, interval=400, repeat=False,
+        frames = len(self.time_ids)
+        if self.is_time_cumulative:
+            frames += 1
+        ani = FuncAnimation(self.fig, self.draw, frames=frames, interval=400, repeat=False,
                             fargs=[save_anim_imgs_base_path])
         if save_anim_path:
             ani.save(save_anim_path, writer='imagemagick')

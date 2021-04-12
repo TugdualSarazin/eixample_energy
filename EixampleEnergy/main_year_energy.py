@@ -1,3 +1,4 @@
+from EixampleEnergy.drawers.drawer_stacked_bar import DrawerStackedBar
 from EixampleEnergy.tool import load_shapefile
 from EixampleEnergy.drawers.drawer import Drawer
 from EixampleEnergy.drawers.drawer_chart import DrawerChart
@@ -19,11 +20,11 @@ def main():
                            xlim=(2.13, 2.20),
                            ylim=(41.313, 41.47))
     drawer_chart = DrawerChart(full_df=df,
-                               xcol="build_date",
-                               ycol="E_final",
-                               xlabel="Build year",
-                               ylabel="Energy (kWh/year)",
-                               dot_size=0.5, line_size=1)
+                                    xcol="build_date",
+                                    ycol="E_final",
+                                    xlabel="Build year",
+                                    ylabel="Energy (kWh/year)",
+                                    dot_size=0.5, line_size=1)
 
     drawer = Drawer(full_df=df,
                     drawers=[drawer_map, drawer_chart],
